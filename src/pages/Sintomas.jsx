@@ -21,7 +21,7 @@ function Sintomas() {
       ...dadosDoFormulario
     }
 
-    setSintomas([...sintomas, novoSintoma])
+    setSintomas(anteriores => [...anteriores, novoSintoma])
 
     fecharFormulario()
   }
