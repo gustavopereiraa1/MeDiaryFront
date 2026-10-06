@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import SymptomCard from '../components/SymptomCard'
 import SymptomForm from '../components/SymptomForm'
+import {useLocalStorage} from '../hooks/useLocalStorage'
 
 function Sintomas() {
-  const [sintomas, setSintomas] = useState([])
+  const [sintomas, setSintomas] = useLocalStorage('sintomas', [])
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
 
   function abrirFormulario() {
