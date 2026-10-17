@@ -26,7 +26,7 @@ O sistema é destinado a pessoas que desejam registrar e acompanhar seus própri
 
 Desenvolver uma aplicação web que facilite o registro e a visualização de sintomas, utilizando uma interface intuitiva e organizada.
 
-Na Sprint 1, o foco foi a estrutura inicial da aplicação (componentes, estados, eventos e múltiplas páginas). Na Sprint 2, o foco é o formulário controlado e a persistência dos registros com `localStorage`.
+Na Sprint 1, o foco foi a estrutura inicial da aplicação (componentes, estados, eventos e múltiplas páginas). Na Sprint 2, o foco é o CRUD completo dos sintomas (cadastrar, listar, editar e excluir), com formulário controlado e persistência dos registros com `localStorage`.
 
 ---
 
@@ -50,12 +50,14 @@ Nesta versão inicial, o Mediary possui:
 
 ## Funcionalidades da Sprint 2
 
+- CRUD completo de sintomas: **cadastrar**, **listar**, **editar** e **excluir**;
 - Formulário controlado com `useState` (sintoma, intensidade, horário e descrição);
-- Formulário separado no componente `SymptomForm.jsx`;
+- Formulário separado no componente `SymptomForm.jsx`, reutilizado para cadastro e edição (abre preenchido ao editar);
+- Botões **Editar** e **Excluir** em cada card, com confirmação antes de excluir;
 - Validação simples: campos obrigatórios e remoção de espaços extras (`trim`);
 - Persistência dos sintomas com `localStorage`: os registros continuam na tela após recarregar a página (F5) ou trocar de página;
 - Hook customizado `useLocalStorage` (`src/hooks/useLocalStorage.js`), que funciona como um `useState` que lê e grava no navegador;
-- Atualização funcional do estado ao cadastrar (`setSintomas(anteriores => [...anteriores, novo])`).
+- Atualizações imutáveis com a forma funcional do estado: cadastrar com spread (`[...anteriores, novo]`), editar com `map` e excluir com `filter`.
 
 ### Onde os dados ficam salvos
 
@@ -98,13 +100,13 @@ MeDiaryFront/
 ├── src/
 │   ├── components/
 │   │   ├── Navbar.jsx         # Menu de navegação
-│   │   ├── SymptomCard.jsx    # Card que exibe um sintoma
-│   │   └── SymptomForm.jsx    # Formulário controlado de cadastro
+│   │   ├── SymptomCard.jsx    # Card de um sintoma, com Editar/Excluir
+│   │   └── SymptomForm.jsx    # Formulário controlado (cadastro e edição)
 │   ├── hooks/
 │   │   └── useLocalStorage.js # Hook de persistência no localStorage
 │   ├── pages/
 │   │   ├── Home.jsx
-│   │   ├── Sintomas.jsx       # Lista + cadastro de sintomas
+│   │   ├── Sintomas.jsx       # CRUD de sintomas (lista e formulário)
 │   │   └── Sobre.jsx
 │   ├── App.jsx                # Controle da página atual
 │   ├── App.css
