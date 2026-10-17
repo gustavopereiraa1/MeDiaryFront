@@ -2,7 +2,9 @@ function SymptomCard({
   nome,
   intensidade,
   horario,
-  descricao
+  descricao,
+  onEditar,
+  onExcluir
 }) {
   return (
     <article className="symptom-card">
@@ -30,6 +32,26 @@ function SymptomCard({
         <span>Horário</span>
 
         <strong>{horario}</strong>
+
+      </div>
+
+      <div className="symptom-acoes">
+
+        <button
+          type="button"
+          className="btn-card"
+          onClick={onEditar}
+        >
+          Editar
+        </button>
+
+        <button
+          type="button"
+          className="btn-card btn-card-excluir"
+          onClick={onExcluir}
+        >
+          Excluir
+        </button>
 
       </div>
 

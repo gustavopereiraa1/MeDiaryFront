@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
-function SymptomForm({ onSalvar, onCancelar }) {
-  const [nome, setNome] = useState('')
-  const [intensidade, setIntensidade] = useState('Leve')
-  const [horario, setHorario] = useState('')
-  const [descricao, setDescricao] = useState('')
+// sintomaInicial: null ao cadastrar; o sintoma a ser editado ao editar
+function SymptomForm({ sintomaInicial, onSalvar, onCancelar }) {
+  const [nome, setNome] = useState(sintomaInicial?.nome ?? '')
+  const [intensidade, setIntensidade] = useState(sintomaInicial?.intensidade ?? 'Leve')
+  const [horario, setHorario] = useState(sintomaInicial?.horario ?? '')
+  const [descricao, setDescricao] = useState(sintomaInicial?.descricao ?? '')
 
   function enviarFormulario(event) {
     event.preventDefault()
@@ -104,7 +105,7 @@ function SymptomForm({ onSalvar, onCancelar }) {
           type="submit"
           className="btn-principal"
         >
-          Salvar sintoma
+          {sintomaInicial ? 'Salvar alterações' : 'Salvar sintoma'}
         </button>
 
       </div>

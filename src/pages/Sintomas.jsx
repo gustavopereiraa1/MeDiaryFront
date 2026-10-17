@@ -1,30 +1,66 @@
 import { useState } from 'react'
 import SymptomCard from '../components/SymptomCard'
 import SymptomForm from '../components/SymptomForm'
-import {useLocalStorage} from '../hooks/useLocalStorage'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 function Sintomas() {
   const [sintomas, setSintomas] = useLocalStorage('sintomas', [])
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
 
+  // null = cadastrando um sintoma novo; objeto = editando esse sintoma
+  const [sintomaEmEdicao, setSintomaEmEdicao] = useState(null)
+
   function abrirFormulario() {
+    setSintomaEmEdicao(null)
+    setMostrarFormulario(true)
+  }
+
+  function iniciarEdicao(sintoma) {
+    setSintomaEmEdicao(sintoma)
     setMostrarFormulario(true)
   }
 
   function fecharFormulario() {
+    setSintomaEmEdicao(null)
     setMostrarFormulario(false)
   }
 
-  function cadastrarSintoma(dadosDoFormulario) {
-    const novoSintoma = {
-      id: Date.now(),
-      ...dadosDoFormulario
-    }
+  // Create e Update: o mesmo formulário serve para os dois casos
+  function salvarSintoma(dadosDoFormulario) {
+    if (sintomaEmEdicao === null) {
+      const novoSintoma = {
+        id: Date.now(),
+        ...dadosDoFormulario
+      }
 
-    setSintomas(anteriores => [...anteriores, novoSintoma])
+      setSintomas(anteriores => [...anteriores, novoSintoma])
+    } else {
+      setSintomas(anteriores =>
+        anteriores.map(sintoma =>
+          sintoma.id === sintomaEmEdicao.id
+            ? { ...sintoma, ...dadosDoFormulario }
+            : sintoma
+        )
+      )
+    }
 
     fecharFormulario()
   }
+
+  // Delete
+  function removerSintoma(id) {
+    const confirmou = window.confirm('Deseja excluir este sintoma?')
+
+    if (!confirmou) {
+      return
+    }
+
+    setSintomas(anteriores =>
+      anteriores.filter(sintoma => sintoma.id !== id)
+    )
+  }
+
+  const editando = sintomaEmEdicao !== null
 
   return (
     <section className="pagina">
@@ -70,6 +106,8 @@ function Sintomas() {
                   intensidade={sintoma.intensidade}
                   horario={sintoma.horario}
                   descricao={sintoma.descricao}
+                  onEditar={() => iniciarEdicao(sintoma)}
+                  onExcluir={() => removerSintoma(sintoma.id)}
                 />
               ))}
             </div>
@@ -80,9 +118,11 @@ function Sintomas() {
 
           <div className="pagina-header">
             <div>
-              <span className="tag">NOVO REGISTRO</span>
+              <span className="tag">
+                {editando ? 'EDITAR REGISTRO' : 'NOVO REGISTRO'}
+              </span>
 
-              <h1>Registrar sintoma</h1>
+              <h1>{editando ? 'Editar sintoma' : 'Registrar sintoma'}</h1>
 
               <p>
                 Descreva as informações relacionadas ao sintoma.
@@ -91,7 +131,8 @@ function Sintomas() {
           </div>
 
           <SymptomForm
-            onSalvar={cadastrarSintoma}
+            sintomaInicial={sintomaEmEdicao}
+            onSalvar={salvarSintoma}
             onCancelar={fecharFormulario}
           />
         </div>

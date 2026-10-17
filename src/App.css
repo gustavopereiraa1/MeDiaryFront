@@ -474,6 +474,47 @@ textarea {
   font-size: 14px;
 }
 
+/* Botões de editar/excluir do card */
+
+.symptom-acoes {
+  margin-top: 15px;
+
+  display: flex;
+  gap: 10px;
+}
+
+.btn-card {
+  flex: 1;
+
+  border: 1px solid #cfe1e4;
+
+  background: white;
+  color: #1e6872;
+
+  padding: 9px 14px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.btn-card:hover {
+  background: #f1f8f9;
+}
+
+.btn-card-excluir {
+  border-color: #f2c4c4;
+
+  color: #c0392b;
+}
+
+.btn-card-excluir:hover {
+  background: #fdf1f1;
+}
+
 /* ========================================
    ESTADO VAZIO
    ======================================== */
