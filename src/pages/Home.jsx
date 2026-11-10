@@ -11,9 +11,10 @@ function Home({ onNavegar }) {
           </h1>
 
           <p>
-            O Mediary é uma proposta de aplicação para
-            organizar registros de sintomas de forma simples
-            e facilitar o acompanhamento das informações.
+            O Mediary ajuda você a registrar seus sintomas,
+            com início, término e descrição, e a acompanhar
+            tudo mês a mês. Os registros ficam salvos com segurança
+            na sua conta.
           </p>
 
           <button
@@ -36,7 +37,7 @@ function Home({ onNavegar }) {
           <span>01</span>
           <h3>Organização</h3>
           <p>
-            Centralize seus registros em um único lugar.
+            Centralize seus registros em um único lugar, acessível de qualquer dispositivo.
           </p>
         </div>
 
@@ -44,7 +45,7 @@ function Home({ onNavegar }) {
           <span>02</span>
           <h3>Acompanhamento</h3>
           <p>
-            Visualize os sintomas registrados de maneira simples.
+            Veja seus registros organizados por mês, com início e término.
           </p>
         </div>
 

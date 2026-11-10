@@ -6,8 +6,8 @@ function Sobre() {
           <span className="tag">SOBRE O PROJETO</span>
           <h1>Conheça o Mediary</h1>
           <p>
-            Uma proposta de aplicação para organização
-            de registros de sintomas.
+            Uma aplicação web para registrar e acompanhar
+            sintomas, integrada a uma API própria.
           </p>
         </div>
       </div>
