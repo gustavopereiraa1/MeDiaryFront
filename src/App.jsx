@@ -1,20 +1,25 @@
 import { useState } from 'react'
 import Navbar from './components/Navbar'
+import Carregando from './components/Carregando'
 import Home from './pages/Home'
 import Sintomas from './pages/Sintomas'
 import Sobre from './pages/Sobre'
+import Entrar from './pages/Entrar'
+import { useAuth } from './hooks/useAuth'
 import './App.css'
 
 function App() {
   const [paginaAtual, setPaginaAtual] = useState('home')
+  const { usuario, verificandoSessao } = useAuth()
 
   function renderizarPagina() {
-    if (paginaAtual === 'home') {
-      return <Home onNavegar={setPaginaAtual} />
-    }
-
     if (paginaAtual === 'sintomas') {
-      return <Sintomas />
+      if (verificandoSessao) {
+        return <Carregando texto="Verificando sessão..." />
+      }
+
+      // A página de sintomas usa a API, que exige login
+      return usuario ? <Sintomas /> : <Entrar />
     }
 
     if (paginaAtual === 'sobre') {
