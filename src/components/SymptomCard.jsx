@@ -1,39 +1,44 @@
-function SymptomCard({
-  nome,
-  intensidade,
-  horario,
-  descricao,
-  onEditar,
-  onExcluir
-}) {
+import { buscarTipo } from '../constants/sintomas'
+import { formatarDataHora } from '../utils/datas'
+
+function SymptomCard({ sintoma, excluindo, onEditar, onExcluir }) {
+  const tipo = buscarTipo(sintoma.tipo)
+  const emAndamento = !sintoma.fim
+
+  const titulo = sintoma.subtipo
+    ? `${tipo.rotulo} · ${sintoma.subtipo.charAt(0) + sintoma.subtipo.slice(1).toLowerCase()}`
+    : tipo.rotulo
+
   return (
     <article className="symptom-card">
 
       <div className="symptom-top">
 
-        <div className="symptom-icon">
-          +
+        <div className="symptom-icon" aria-hidden="true">
+          {tipo.icone}
         </div>
 
-        <span
-          className={`intensidade ${intensidade.toLowerCase()}`}
-        >
-          {intensidade}
+        <span className={`status-sintoma ${emAndamento ? 'andamento' : 'encerrado'}`}>
+          {emAndamento ? 'Em andamento' : 'Encerrado'}
         </span>
 
       </div>
 
-      <h2>{nome}</h2>
+      <h2>{titulo}</h2>
 
-      <p>{descricao}</p>
+      <p>{sintoma.descricao || 'Sem descrição.'}</p>
 
       <div className="symptom-footer">
-
-        <span>Horário</span>
-
-        <strong>{horario}</strong>
-
+        <span>Início</span>
+        <strong>{formatarDataHora(sintoma.inicio)}</strong>
       </div>
+
+      {!emAndamento && (
+        <div className="symptom-footer symptom-footer-fim">
+          <span>Término</span>
+          <strong>{formatarDataHora(sintoma.fim)}</strong>
+        </div>
+      )}
 
       <div className="symptom-acoes">
 
@@ -41,6 +46,7 @@ function SymptomCard({
           type="button"
           className="btn-card"
           onClick={onEditar}
+          disabled={excluindo}
         >
           Editar
         </button>
@@ -49,8 +55,9 @@ function SymptomCard({
           type="button"
           className="btn-card btn-card-excluir"
           onClick={onExcluir}
+          disabled={excluindo}
         >
-          Excluir
+          {excluindo ? 'Excluindo...' : 'Excluir'}
         </button>
 
       </div>

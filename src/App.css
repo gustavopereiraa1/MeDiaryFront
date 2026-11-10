@@ -411,28 +411,21 @@ textarea {
   font-weight: 700;
 }
 
-.intensidade {
+.status-sintoma {
   padding: 6px 10px;
-
   border-radius: 20px;
-
   font-size: 12px;
   font-weight: 700;
 }
 
-.intensidade.leve {
-  background: #e8f7ee;
-  color: #26834a;
-}
-
-.intensidade.moderada {
+.status-sintoma.andamento {
   background: #fff5dc;
   color: #a97800;
 }
 
-.intensidade.forte {
-  background: #fde8e8;
-  color: #c23b3b;
+.status-sintoma.encerrado {
+  background: #e8f7ee;
+  color: #26834a;
 }
 
 .symptom-card h2 {
@@ -1018,4 +1011,61 @@ button.logo {
   .auth-card {
     padding: 25px 20px;
   }
+}
+
+/* ========================================
+   SINTOMAS - API
+   ======================================== */
+
+.seletor-mes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.seletor-mes strong {
+  min-width: 190px;
+  text-align: center;
+  color: #1e6872;
+  font-size: 18px;
+}
+
+.seletor-mes button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #cfe1e4;
+  background: white;
+  color: #1e6872;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.seletor-mes button:hover:not(:disabled) {
+  background: #eaf7f9;
+}
+
+.seletor-mes button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.symptom-footer-fim {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 8px;
+}
+
+.campos-linha {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0 20px;
+}
+
+.campo-opcional {
+  color: #89999c;
+  font-weight: 400;
 }

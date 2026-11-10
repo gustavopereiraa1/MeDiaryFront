@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext'
 import * as authService from '../services/authService'
 
@@ -28,10 +28,12 @@ function AuthProvider({ children }) {
     }
   }
 
-  // Usado quando a API responde 401 (sessão expirou)
-  function encerrarSessaoLocal() {
+  // Usado quando a API responde 401 (sessão expirou).
+  // useCallback mantém a mesma função entre renderizações, evitando
+  // que os efeitos que dependem dela rodem de novo sem necessidade.
+  const encerrarSessaoLocal = useCallback(() => {
     setUsuario(null)
-  }
+  }, [])
 
   const valor = {
     usuario,

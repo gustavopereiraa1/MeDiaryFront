@@ -1,27 +1,40 @@
 import { useState } from 'react'
+import MensagemErro from './MensagemErro'
+import { TIPOS_SINTOMA, SUBTIPOS_DOR } from '../constants/sintomas'
+import { agoraParaInput, apiParaInput, inputParaApi } from '../utils/datas'
 
 // sintomaInicial: null ao cadastrar; o sintoma a ser editado ao editar
-function SymptomForm({ sintomaInicial, onSalvar, onCancelar }) {
-  const [nome, setNome] = useState(sintomaInicial?.nome ?? '')
-  const [intensidade, setIntensidade] = useState(sintomaInicial?.intensidade ?? 'Leve')
-  const [horario, setHorario] = useState(sintomaInicial?.horario ?? '')
+// erroDaApi: mensagem que a API devolveu ao tentar salvar (ex.: data futura)
+function SymptomForm({ sintomaInicial, salvando, erroDaApi, onSalvar, onCancelar }) {
+  const [tipo, setTipo] = useState(sintomaInicial?.tipo ?? 'DOR')
+  const [subtipo, setSubtipo] = useState(sintomaInicial?.subtipo ?? 'CABEÇA')
+  const [inicio, setInicio] = useState(apiParaInput(sintomaInicial?.inicio) || agoraParaInput())
+  const [fim, setFim] = useState(apiParaInput(sintomaInicial?.fim))
   const [descricao, setDescricao] = useState(sintomaInicial?.descricao ?? '')
+  const [erroValidacao, setErroValidacao] = useState('')
 
   function enviarFormulario(event) {
     event.preventDefault()
+    setErroValidacao('')
 
-    const nomeLimpo = nome.trim()
     const descricaoLimpa = descricao.trim()
 
-    if (!nomeLimpo || !horario || !descricaoLimpa) {
+    if (tipo === 'OUTRO' && !descricaoLimpa) {
+      setErroValidacao('Descreva o sintoma quando o tipo for "Outro".')
+      return
+    }
+
+    if (fim && fim < inicio) {
+      setErroValidacao('O término não pode ser antes do início.')
       return
     }
 
     onSalvar({
-      nome: nomeLimpo,
-      intensidade,
-      horario,
-      descricao: descricaoLimpa
+      tipo,
+      subtipo: tipo === 'DOR' ? subtipo : null,
+      descricao: descricaoLimpa || null,
+      inicio: inputParaApi(inicio),
+      fim: inputParaApi(fim),
     })
   }
 
@@ -30,55 +43,81 @@ function SymptomForm({ sintomaInicial, onSalvar, onCancelar }) {
       className="formulario-sintoma"
       onSubmit={enviarFormulario}
     >
+      <MensagemErro mensagem={erroValidacao || erroDaApi} />
 
-      <div className="campo">
-        <label htmlFor="nome">
-          Sintoma
-        </label>
+      <div className="campos-linha">
+        <div className="campo">
+          <label htmlFor="tipo">
+            Sintoma
+          </label>
 
-        <input
-          id="nome"
-          type="text"
-          placeholder="Ex.: Dor de cabeça"
-          value={nome}
-          onChange={(event) => setNome(event.target.value)}
-          required
-        />
+          <select
+            id="tipo"
+            value={tipo}
+            onChange={(event) => setTipo(event.target.value)}
+          >
+            {TIPOS_SINTOMA.map((opcao) => (
+              <option key={opcao.valor} value={opcao.valor}>
+                {opcao.rotulo}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {tipo === 'DOR' && (
+          <div className="campo">
+            <label htmlFor="subtipo">
+              Local da dor
+            </label>
+
+            <select
+              id="subtipo"
+              value={subtipo}
+              onChange={(event) => setSubtipo(event.target.value)}
+            >
+              {SUBTIPOS_DOR.map((opcao) => (
+                <option key={opcao} value={opcao}>
+                  {opcao.charAt(0) + opcao.slice(1).toLowerCase()}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
-      <div className="campo">
-        <label htmlFor="intensidade">
-          Intensidade
-        </label>
+      <div className="campos-linha">
+        <div className="campo">
+          <label htmlFor="inicio">
+            Início
+          </label>
 
-        <select
-          id="intensidade"
-          value={intensidade}
-          onChange={(event) => setIntensidade(event.target.value)}
-        >
-          <option value="Leve">Leve</option>
-          <option value="Moderada">Moderada</option>
-          <option value="Forte">Forte</option>
-        </select>
-      </div>
+          <input
+            id="inicio"
+            type="datetime-local"
+            value={inicio}
+            onChange={(event) => setInicio(event.target.value)}
+            required
+          />
+        </div>
 
-      <div className="campo">
-        <label htmlFor="horario">
-          Horário
-        </label>
+        <div className="campo">
+          <label htmlFor="fim">
+            Término <span className="campo-opcional">(opcional)</span>
+          </label>
 
-        <input
-          id="horario"
-          type="time"
-          value={horario}
-          onChange={(event) => setHorario(event.target.value)}
-          required
-        />
+          <input
+            id="fim"
+            type="datetime-local"
+            value={fim}
+            min={inicio}
+            onChange={(event) => setFim(event.target.value)}
+          />
+        </div>
       </div>
 
       <div className="campo">
         <label htmlFor="descricao">
-          Descrição
+          Descrição {tipo !== 'OUTRO' && <span className="campo-opcional">(opcional)</span>}
         </label>
 
         <textarea
@@ -87,16 +126,16 @@ function SymptomForm({ sintomaInicial, onSalvar, onCancelar }) {
           value={descricao}
           onChange={(event) => setDescricao(event.target.value)}
           rows="5"
-          required
+          maxLength={1000}
         />
       </div>
 
       <div className="formulario-acoes">
-
         <button
           type="button"
           className="btn-secundario"
           onClick={onCancelar}
+          disabled={salvando}
         >
           Cancelar
         </button>
@@ -104,12 +143,13 @@ function SymptomForm({ sintomaInicial, onSalvar, onCancelar }) {
         <button
           type="submit"
           className="btn-principal"
+          disabled={salvando}
         >
-          {sintomaInicial ? 'Salvar alterações' : 'Salvar sintoma'}
+          {salvando
+            ? 'Salvando...'
+            : sintomaInicial ? 'Salvar alterações' : 'Salvar sintoma'}
         </button>
-
       </div>
-
     </form>
   )
 }
