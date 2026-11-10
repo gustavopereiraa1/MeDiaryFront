@@ -14,11 +14,13 @@ export function mensagemDeErro(erro, mensagemPadrao = 'Algo deu errado. Tente no
     return 'O servidor demorou para responder. Tente novamente.'
   }
 
-  if (!erro.response) {
+  // Sem resposta, ou 502/503/504 (o proxy não alcançou a API): API fora do ar
+  const status = erro.response?.status
+  if (!erro.response || [502, 503, 504].includes(status)) {
     return 'Não foi possível conectar ao servidor. Verifique se a API está rodando.'
   }
 
-  if (erro.response.status >= 500) {
+  if (status >= 500) {
     return 'O servidor encontrou um erro. Tente novamente em instantes.'
   }
 
